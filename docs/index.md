@@ -2,39 +2,43 @@
 title: About
 ---
 
-## systemd system extension (`systemd-sysext`) for Steam Deck
+# 1Password for Steam Deck
 
-> **Note:** This is a fork of [sebble/1password-sysext-steam-deck](https://github.com/sebble/1password-sysext-steam-deck), originally created by Sebastian Mellor ([sebble](https://github.com/sebble)). All credit for the original approach and documentation goes to them. Answers in the F.A.Q. below written in the first person are theirs.
+Run the 1Password desktop app and CLI on SteamOS as a [systemd system extension](https://blogs.igalia.com/berto/2022/09/13/adding-software-to-the-steam-deck-with-systemd-sysext/) (`systemd-sysext`).
+A system extension adds software to `/usr` and `/opt` without unlocking the read-only file system or enabling developer mode.
 
-> **Notice:** This is a work in progress. See the [open issues](https://github.com/cptn-cosmo/1password-sysext-steam-deck/issues), and the [issues on the original repository](https://github.com/sebble/1password-sysext-steam-deck/issues).
+> [!NOTE]
+> This is a fork of [sebble/1password-sysext-steam-deck](https://github.com/sebble/1password-sysext-steam-deck), originally created by Sebastian Mellor ([sebble](https://github.com/sebble)).
+> All credit for the original approach and documentation goes to them.
 
-This repository contains instructions to build a system extension for use on a Steam Deck.
-A systemd system extension allows you to install software without modifying the read-only file system on `/usr`.
+## Features
 
-Last tested with:
+- 🖥️ Desktop app in the application launcher, with icons
+- 📌 System tray with _Quick Access_ popup
+- 🦊 1Password links from Firefox open in the desktop app, including registering accounts
+- 🔑 SSH agent in the terminal, including commit signing
+- 🔒 Unlock with system authentication
+- ⌨️ 1Password CLI (`op`), also inside the VS Code Flatpak
+- 🛡️ KWallet set up as the Secret Service, so 1Password can remember the 2FA token (e.g. after signing in with a YubiKey)
+- 🔄 One script to install and update
 
-- SteamOS Holo 3.6.24 (20250313.1)
-- 1Password for Linux 8.10.75 (81075001)
-- Mozilla Firefox Flatpak 138.0.1
-- 1Password CLI 2.30.3
+**Last tested with:**
 
-**Features**
+| Component                 | Version             |
+| ------------------------- | ------------------- |
+| SteamOS Holo              | 3.6.24 (20250313.1) |
+| 1Password for Linux       | 8.10.75 (81075001)  |
+| 1Password CLI             | 2.30.3              |
+| Mozilla Firefox (Flatpak) | 138.0.1             |
 
--   Desktop GUI application appears with icons
--   System tray with _Quick Access_ popup
--   1Password links from Firefox open in desktop GUI, including registering accounts
--   **SSH Agent can be used from Terminal, including commit signing**
--   **System authentication prompt**
--   **1Password CLI works**
--   **1Password SSH Agent works inside VSCode Flatpak**
+## Installation
 
-**Note:** Ensure a full system restart after any updates, this resolves most errors with op CLI in my limited experience.
+**Requirements**
 
-### Instructions
+- Desktop Mode with a normal terminal (e.g. Konsole). **Not** a terminal inside a Flatpak such as VS Code.
+- A password for the `deck` user, as the script uses `sudo`. Set one with `passwd` if you haven't yet.
 
-**Quick start**
-
-You must run this from a normal SteamOS Terminal within this repo, not within, e.g., VS Code Flatpak.
+**Install**
 
 ```shell
 git clone https://github.com/cptn-cosmo/1password-sysext-steam-deck.git
@@ -42,37 +46,100 @@ cd 1password-sysext-steam-deck
 ./scripts/10_setup.sh
 ```
 
-This downloads 1Password, builds the system extension and installs it. Re-run it to update to the latest 1Password, or after a SteamOS update; it does nothing if everything is already up to date (pass `--force` to rebuild anyway). If 1Password is running, the script offers to quit it before installing.
+The script downloads the latest stable 1Password and 1Password CLI, builds the system extension, and installs it to `~/extensions`.
+Restart the Steam Deck afterwards.
 
-The script also registers KWallet as the Secret Service, so 1Password can remember the 2FA token after signing in (e.g. with a YubiKey). See [issue #22 on the original repository](https://github.com/sebble/1password-sysext-steam-deck/issues/22). If you installed with an older version of this repository, re-run the script to apply this.
+## Updating
 
-Or read through the source-code which has been written with in-line documentation. [On GitHub (source)](https://github.com/cptn-cosmo/1password-sysext-steam-deck/blob/main/scripts/10_setup.sh). [On GitHub (rendered)](https://github.com/cptn-cosmo/1password-sysext-steam-deck/blob/main/docs/10_setup.md)
+Run the same script again:
 
-**Setting up SSH Agent**
+```shell
+cd 1password-sysext-steam-deck
+git pull
+./scripts/10_setup.sh
+```
 
-Add the following to your `~/.bashrc` if you want all SSH Agent connections to use 1Password.
+- If 1Password and the CLI are already up to date, nothing happens. Pass `--force` to rebuild anyway.
+- If 1Password is running, the script offers to quit it before installing.
+- **After a SteamOS update**, the extension is no longer loaded (it is tied to the SteamOS version). Re-run the script to rebuild it.
+
+> [!TIP]
+> Restart the Steam Deck after every update. This resolves most errors with the `op` CLI.
+
+## Configuration
+
+### SSH agent
+
+To use 1Password for all SSH connections, add this to your `~/.bashrc`:
 
 ```shell
 export SSH_AUTH_SOCK=~/.1password/agent.sock
 ```
 
-### F.A.Q.
+### 1Password CLI inside Flatpaks
 
-**Why not use the official Arch installation instructions?**
+To use `op` inside Flatpaks that can access your home directory (e.g. VS Code), copy it into `~/.local/bin`:
+
+```shell
+./scripts/31_install_cli.sh
+```
+
+The setup script keeps this copy up to date.
+
+### Remembering the 2FA token
+
+The setup script registers KWallet as the freedesktop Secret Service, so 1Password can store the 2FA token after you sign in with, e.g., a YubiKey.
+If you installed with an older version of this repository, re-run the script to apply this.
+See [issue #22 on the original repository](https://github.com/sebble/1password-sysext-steam-deck/issues/22).
+
+## Troubleshooting
+
+| Problem | Solution |
+| ------- | -------- |
+| 1Password is missing after a SteamOS update | Re-run `./scripts/10_setup.sh`. |
+| `op` CLI errors after an update | Restart the Steam Deck. |
+| The extension has the wrong `os-release` (e.g. `22.08`) | You ran the script inside a Flatpak. Use a normal terminal. |
+| The extension is not loaded | Check `systemd-sysext status`, then try `sudo systemd-sysext refresh`. |
+
+Still stuck? [Open an issue](https://github.com/cptn-cosmo/1password-sysext-steam-deck/issues/new/choose), or check the [issues on the original repository](https://github.com/sebble/1password-sysext-steam-deck/issues).
+
+## How it works
+
+The [setup script](https://github.com/cptn-cosmo/1password-sysext-steam-deck/blob/main/scripts/10_setup.sh) is documented step by step with inline comments.
+It combines the official 1Password tarball, Debian package and CLI into one extension image, and mirrors what the official post-install script does.
+
+Every script is also valid Markdown once the leading `# ` is removed from each line, which is why they contain lines like `` # ```shell ``.
+`make docs` converts them into the [`docs/` folder](https://github.com/cptn-cosmo/1password-sysext-steam-deck/tree/main/docs), e.g. the [rendered setup script](https://github.com/cptn-cosmo/1password-sysext-steam-deck/blob/main/docs/10_setup.md).
+The [original documentation site](https://sebble.github.io/1password-sysext-steam-deck/) shows the upstream version.
+
+The `Makefile` only calls the scripts. `make` is not installed on SteamOS by default, so run the scripts directly.
+
+## FAQ
+
+_Answers by the original author._
+
+<details>
+<summary><b>Why not use the official Arch installation instructions?</b></summary>
 
 See <https://support.1password.com/install-linux/#arch-linux>.
 
 This will fail at `makepkg`, installing the missing dependency will then fail at `fakeroot`.
 
-**Why not use the official Flatpak?**
+</details>
+
+<details>
+<summary><b>Why not use the official Flatpak?</b></summary>
 
 See <https://support.1password.com/install-linux/#flatpak>.
 
--   You’ll need to lock and unlock 1Password in your browser separately from the app.
--   You won’t be able to unlock 1Password or 1Password CLI with system authentication.
--   You won’t be able to use the SSH agent.
+- You’ll need to lock and unlock 1Password in your browser separately from the app.
+- You won’t be able to unlock 1Password or 1Password CLI with system authentication.
+- You won’t be able to use the SSH agent.
 
-**Why not follow the instructions for other distributions?**
+</details>
+
+<details>
+<summary><b>Why not follow the instructions for other distributions?</b></summary>
 
 See <https://support.1password.com/install-linux/#other-distributions-or-arm-targz>.
 
@@ -80,20 +147,31 @@ The installation script `sudo /opt/1Password/after-install.sh` will fail when tr
 
 You could use `sudo steamos-readonly disable` but I have chosen not to. See the next question.
 
-**Why not enable Steam Deck developer mode and/or make the `/usr` partition writable?**
+</details>
+
+<details>
+<summary><b>Why not enable developer mode and/or make the <code>/usr</code> partition writable?</b></summary>
 
 See <https://help.steampowered.com/en/faqs/view/671A-4453-E8D2-323C>.
 
 I don't want to. System updates will probably revert any changes you have made in here.
 
-**What are the downsides of this approach?**
+</details>
+
+<details>
+<summary><b>Could this be achieved with more permissive Flatpak policies?</b></summary>
+
+I don't know. I assume not, but when reading about Visual Studio Code Flatpak issues perhaps there are other approaches..? Please share if you have ideas. P.S. I do not know Flatpak either so I would not be able to implement this.
+
+</details>
+
+<details>
+<summary><b>What are the downsides of this approach?</b></summary>
 
 Firstly, I made this with very little initial knowledge of `systemd-sysext`, _Arch_, and a few other things. This is for personal use.
 
 Secondly, see <https://blogs.igalia.com/berto/2022/09/13/adding-software-to-the-steam-deck-with-systemd-sysext/> (section "Limitations and caveats") for some very good reasons to be wary of using `systemd-sysext`.
-
-<details>
-<summary>Copy of the above blog in case it is not available. [2023-01-14]</summary>
+A copy of that section, in case the blog is not available [2023-01-14]:
 
 > Using extensions is easy (you put them in the directory and voilà!). However, creating extensions is not necessarily always easy. To begin with, any libraries, files, etc., that your extensions may need should be either present in the root filesystem or provided by the extension itself. You may need to combine files from different sources or packages into a single extension, or compile them yourself.
 >
@@ -111,34 +189,8 @@ Secondly, see <https://blogs.igalia.com/berto/2022/09/13/adding-software-to-the-
 
 </details>
 
-**Could this be achieved with more permissive Flatpak policies?**
+## Credits
 
-I don't know. I assume not, but when reading about Visual Studio Code Flatpak issues perhaps there are other approaches..? Please share if you have ideas. P.S. I do not know Flatpak either so I would not be able to implement this.
-
-**My `os-release` is `22.08`**
-
-If you run the setup script within a VS Code Flatpak you will not get the correct values for `os-release` and other system properties.
-
-Use a system Terminal session. The setup script refuses to run inside a Flatpak.
-
-**Where is the documentation?**
-
-I have added comments inline with the main script, these are converted to markdown (as long as I remembered to type `make docs` before committing). See the [`docs/` folder](https://github.com/cptn-cosmo/1password-sysext-steam-deck/tree/main/docs), or the [original documentation site](https://sebble.github.io/1password-sysext-steam-deck/) for the upstream version.
-
-**I cannot use Make**
-
-See "_My `os-release` is `22.08`_", but this time `make` is not installed on SteamOS in general, only _inside_ the VS Code Flatpak. Ignore the Makefile, use `./scripts/10_setup.sh` directly. There's nothing special in the `Makefile`, it only calls the scripts.
-
-**Why do the scripts look funny?**
-
-If you mean the `# '''shell` lines, that's because every script is also valid markdown if you remove all `^# `. See "Where is the documentation?".
-
-### To-do
-
--   See the [issues](https://github.com/cptn-cosmo/1password-sysext-steam-deck/issues), and the [issues on the original repository](https://github.com/sebble/1password-sysext-steam-deck/issues)
-
-### References
-
--   [Steam Deck system extension](https://blogs.igalia.com/berto/2022/09/13/adding-software-to-the-steam-deck-with-systemd-sysext/)
--   [CLI connection to Desktop app](https://1password.community/discussion/128029/can-not-connect-to-desktop-app)
--   [Reddit Discussion](https://www.reddit.com/r/1Password/comments/vz5pqb/possible_to_install_on_steam_deck/)
+- [Sebastian Mellor (sebble)](https://github.com/sebble), author of the [original project](https://github.com/sebble/1password-sysext-steam-deck)
+- [Adding software to the Steam Deck with systemd-sysext](https://blogs.igalia.com/berto/2022/09/13/adding-software-to-the-steam-deck-with-systemd-sysext/) on the Igalia blog
+- [Reddit discussion: Possible to install on Steam Deck?](https://www.reddit.com/r/1Password/comments/vz5pqb/possible_to_install_on_steam_deck/)
