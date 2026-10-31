@@ -22,10 +22,10 @@ A system extension adds software to `/usr` and `/opt` without unlocking the read
 
 | Component                 | Version             |
 | ------------------------- | ------------------- |
-| SteamOS Holo              | 3.6.24 (20250313.1) |
-| 1Password for Linux       | 8.10.75 (81075001)  |
-| 1Password CLI             | 2.30.3              |
-| Mozilla Firefox (Flatpak) | 138.0.1             |
+| SteamOS                   | 3.9.5               |
+| 1Password for Linux       | 8.12.42             |
+| 1Password CLI             | 2.41.1              |
+| Mozilla Firefox (Flatpak) | 159.0               |
 
 ## Installation
 
