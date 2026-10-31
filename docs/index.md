@@ -6,7 +6,7 @@ title: About
 
 > **Note:** This is a fork of [sebble/1password-sysext-steam-deck](https://github.com/sebble/1password-sysext-steam-deck), originally created by Sebastian Mellor ([sebble](https://github.com/sebble)). All credit for the original approach and documentation goes to them. Answers in the F.A.Q. below written in the first person are theirs.
 
-> **Notice:** This is a work in progress. See the [open issues](https://github.com/cptn-cosmo/1password-sysext-steam-deck/issues), and the [issues on the original repository](https://github.com/sebble/1password-sysext-steam-deck/issues). In particular https://github.com/sebble/1password-sysext-steam-deck/issues/11 (Firefox integration not great any more)
+> **Notice:** This is a work in progress. See the [open issues](https://github.com/cptn-cosmo/1password-sysext-steam-deck/issues), and the [issues on the original repository](https://github.com/sebble/1password-sysext-steam-deck/issues).
 
 This repository contains instructions to build a system extension for use on a Steam Deck.
 A systemd system extension allows you to install software without modifying the read-only file system on `/usr`.
@@ -22,7 +22,7 @@ Last tested with:
 
 -   Desktop GUI application appears with icons
 -   System tray with _Quick Access_ popup
--   ~~1Password links from Firefox open in desktop GUI, including registering accounts~~ https://github.com/sebble/1password-sysext-steam-deck/issues/11
+-   1Password links from Firefox open in desktop GUI, including registering accounts
 -   **SSH Agent can be used from Terminal, including commit signing**
 -   **System authentication prompt**
 -   **1Password CLI works**
