@@ -1,5 +1,5 @@
 #!/bin/sh
 # ln -s -f ../../hooks/pre-commit .git/hooks/pre-commit
 
-./scripts/docs.sh
+./scripts/50_docs.sh
 git add docs/

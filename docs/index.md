@@ -4,7 +4,9 @@ title: About
 
 ## systemd system extension (`systemd-sysext`) for Steam Deck
 
-> **Notice:** This is a work in progress. See [open issues](https://github.com/sebble/1password-sysext-steam-deck/issues). In particular https://github.com/sebble/1password-sysext-steam-deck/issues/11 (Firefox integration not great any more)
+> **Note:** This is a fork of [sebble/1password-sysext-steam-deck](https://github.com/sebble/1password-sysext-steam-deck), originally created by Sebastian Mellor ([sebble](https://github.com/sebble)). All credit for the original approach and documentation goes to them. Answers in the F.A.Q. below written in the first person are theirs.
+
+> **Notice:** This is a work in progress. See the [open issues](https://github.com/cptn-cosmo/1password-sysext-steam-deck/issues), and the [issues on the original repository](https://github.com/sebble/1password-sysext-steam-deck/issues). In particular https://github.com/sebble/1password-sysext-steam-deck/issues/11 (Firefox integration not great any more)
 
 This repository contains instructions to build a system extension for use on a Steam Deck.
 A systemd system extension allows you to install software without modifying the read-only file system on `/usr`.
@@ -35,14 +37,16 @@ Last tested with:
 You must run this from a normal SteamOS Terminal within this repo, not within, e.g., VS Code Flatpak.
 
 ```shell
+git clone https://github.com/cptn-cosmo/1password-sysext-steam-deck.git
+cd 1password-sysext-steam-deck
 ./scripts/10_setup.sh
 ```
 
 This downloads 1Password, builds the system extension and installs it. Re-run it to update to the latest 1Password, or after a SteamOS update; it does nothing if everything is already up to date (pass `--force` to rebuild anyway). If 1Password is running, the script offers to quit it before installing.
 
-Or read through the source-code which has been written with in-line documentation. [On GitHub (source)](https://github.com/sebble/1password-sysext-steam-deck). [On GitHub Pages (rendered)](https://sebble.github.io/1password-sysext-steam-deck/setup)
+The script also registers KWallet as the Secret Service, so 1Password can remember the 2FA token after signing in (e.g. with a YubiKey). See [issue #22 on the original repository](https://github.com/sebble/1password-sysext-steam-deck/issues/22). If you installed with an older version of this repository, re-run the script to apply this.
 
-> TODO: Work out how to either use make on the Terminal, or set root file ownership within Flatpaks.
+Or read through the source-code which has been written with in-line documentation. [On GitHub (source)](https://github.com/cptn-cosmo/1password-sysext-steam-deck/blob/main/scripts/10_setup.sh). [On GitHub (rendered)](https://github.com/cptn-cosmo/1password-sysext-steam-deck/blob/main/docs/10_setup.md)
 
 **Setting up SSH Agent**
 
@@ -113,17 +117,17 @@ I don't know. I assume not, but when reading about Visual Studio Code Flatpak is
 
 **My `os-release` is `22.08`**
 
-If you run the build script within a VS Code Flatpak you will not get the correct values for `os-release` and other system properties.
+If you run the setup script within a VS Code Flatpak you will not get the correct values for `os-release` and other system properties.
 
-Use a system Terminal session.
+Use a system Terminal session. The setup script refuses to run inside a Flatpak.
 
 **Where is the documentation?**
 
-I have added comments inline with the main script, these are converted to markdown (as long as I remembered to type `make docs` before committing). See <https://sebble.github.io/1password-sysext-steam-deck/>.
+I have added comments inline with the main script, these are converted to markdown (as long as I remembered to type `make docs` before committing). See the [`docs/` folder](https://github.com/cptn-cosmo/1password-sysext-steam-deck/tree/main/docs), or the [original documentation site](https://sebble.github.io/1password-sysext-steam-deck/) for the upstream version.
 
 **I cannot use Make**
 
-See "_My `os-release` is `22.08`_", but this time `make` is not installed on SteamOS in general, only _inside_ the VS Code Flatpak. Ignore the Makefile, use `./scripts/10_setup.sh` directly. There's nothing special in the `Makefile` and install won't work, some file ownership also won't work.
+See "_My `os-release` is `22.08`_", but this time `make` is not installed on SteamOS in general, only _inside_ the VS Code Flatpak. Ignore the Makefile, use `./scripts/10_setup.sh` directly. There's nothing special in the `Makefile`, it only calls the scripts.
 
 **Why do the scripts look funny?**
 
@@ -131,7 +135,7 @@ If you mean the `# '''shell` lines, that's because every script is also valid ma
 
 ### To-do
 
--   See https://github.com/sebble/1password-sysext-steam-deck/issues
+-   See the [issues](https://github.com/cptn-cosmo/1password-sysext-steam-deck/issues), and the [issues on the original repository](https://github.com/sebble/1password-sysext-steam-deck/issues)
 
 ### References
 

@@ -22,6 +22,22 @@ SYSEXT_PREFIX=1password
 SYSTEXT_PATH="build/extensions/${SYSEXT_PREFIX}"
 # ```
 
+## Check where we are running
+
+# The script must run as the normal user (it uses `sudo` where needed), otherwise `~/extensions` would end up in `/root`.
+# It also must not run inside a Flatpak (e.g. VS Code), where `/etc/os-release` and file ownership are not those of SteamOS.
+
+# ```shell
+if [ "$(id -u)" -eq 0 ]; then
+  echo "Run this script as your normal user (e.g. deck), not as root."
+  exit 1
+fi
+if [ -f /.flatpak-info ]; then
+  echo "Run this script from a normal SteamOS Terminal, not inside a Flatpak."
+  exit 1
+fi
+# ```
+
 ## Enable the Secret Service (KWallet)
 
 # 1Password stores some secrets (e.g. the 2FA token remembered after signing in with a YubiKey) via the freedesktop Secret Service.
@@ -281,10 +297,16 @@ fi
 # For this reason we are creating a folder for such extensions in our home directory (suggestion from <https://blogs.igalia.com/berto/2022/09/13/adding-software-to-the-steam-deck-with-systemd-sysext/>).
 # With a suitable location for our system image layer, we move the built `.raw` file and create a symlink to our extension directory from the expected location on the real OS.
 
+# If `/var/lib/extensions` already exists as an (empty) directory, it is replaced by the symlink.
+
 # ```shell
 mkdir -p ~/extensions
-test -L /var/lib/extensions || \
-    sudo ln -sf "${HOME}/extensions" /var/lib/extensions
+if [ ! -L /var/lib/extensions ]; then
+  if [ -d /var/lib/extensions ]; then
+    sudo rmdir /var/lib/extensions
+  fi
+  sudo ln -s "${HOME}/extensions" /var/lib/extensions
+fi
 sudo mv ${SYSTEXT_PATH}.raw ~/extensions/${SYSEXT_PREFIX}.raw
 sudo systemctl enable systemd-sysext
 sudo systemctl start systemd-sysext
