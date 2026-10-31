@@ -1,0 +1,71 @@
+name: Bug report
+description: Something does not work when setting up or using 1Password on the Steam Deck
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug! Please check the [existing issues](https://github.com/cptn-cosmo/1password-sysext-steam-deck/issues) and the [issues on the original repository](https://github.com/sebble/1password-sysext-steam-deck/issues) first.
+
+        Problems with 1Password itself (not with running it on the Steam Deck) are better reported to [1Password support](https://support.1password.com/).
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      description: Where does the problem occur?
+      options:
+        - Setup script (download, build or install)
+        - Updating
+        - Desktop app
+        - Browser integration
+        - SSH agent
+        - 1Password CLI (op)
+        - System authentication
+        - 2FA / Secret Service (KWallet)
+        - Other
+    validations:
+      required: true
+  - type: input
+    id: steamos-version
+    attributes:
+      label: SteamOS version
+      description: Settings → System → About, or `grep -E '^(VERSION_ID|BUILD_ID)=' /etc/os-release`
+      placeholder: e.g. 3.7.x (build ID)
+    validations:
+      required: true
+  - type: input
+    id: onepassword-version
+    attributes:
+      label: 1Password version
+      description: Output of `1password --version`
+      placeholder: 8.12.42
+  - type: input
+    id: cli-version
+    attributes:
+      label: 1Password CLI version
+      description: Output of `op --version`, if relevant
+      placeholder: 2.41.1
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs
+      description: |
+        Output of the setup script (`./scripts/10_setup.sh`) and of `systemd-sysext status`, or any error messages from 1Password.
+        Please remove anything sensitive (account details, email addresses) before posting.
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I ran the setup script from a normal SteamOS Terminal, not inside a Flatpak (e.g. VS Code).
+          required: true
+        - label: I restarted the Steam Deck after installing or updating.
+        - label: I am using the latest version of this repository (`git pull`).

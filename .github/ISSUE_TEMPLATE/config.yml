@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Original repository
+    url: https://github.com/sebble/1password-sysext-steam-deck/issues
+    about: Earlier discussions and known issues from the original project by sebble.
+  - name: 1Password support
+    url: https://support.1password.com/
+    about: Problems with 1Password itself, not specific to the Steam Deck.
