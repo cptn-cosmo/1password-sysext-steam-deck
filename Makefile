@@ -1,15 +1,9 @@
-.PHONY: all download build install docs clean
+.PHONY: all setup docs clean
 
-all: clean download build
+all: setup
 
-download:
-	./scripts/10_download.sh
-
-build:
-	./scripts/20_build.sh
-
-install:
-	./scripts/30_install.sh
+setup:
+	./scripts/10_setup.sh
 
 docs:
 	./scripts/50_docs.sh
@@ -18,4 +12,4 @@ hooks: .git/hooks/pre-commit
 	ln -s -f ../../hooks/pre-commit .git/hooks/pre-commit
 
 clean:
-	./scripts/90_clean.sh
+	./scripts/00_clean.sh
