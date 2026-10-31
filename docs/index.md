@@ -35,12 +35,12 @@ Last tested with:
 You must run this from a normal SteamOS Terminal within this repo, not within, e.g., VS Code Flatpak.
 
 ```shell
-./scripts/10_download.sh
-./scripts/20_build.sh
-./scripts/30_install.sh
+./scripts/10_setup.sh
 ```
 
-Or read through the source-code which has been written with in-line documentation. [On GitHub (source)](https://github.com/sebble/1password-sysext-steam-deck). [On GitHub Pages (rendered)](https://sebble.github.io/1password-sysext-steam-deck/download)
+This downloads 1Password, builds the system extension and installs it. Re-run it to update to the latest 1Password, or after a SteamOS update; it does nothing if everything is already up to date (pass `--force` to rebuild anyway). If 1Password is running, the script offers to quit it before installing.
+
+Or read through the source-code which has been written with in-line documentation. [On GitHub (source)](https://github.com/sebble/1password-sysext-steam-deck). [On GitHub Pages (rendered)](https://sebble.github.io/1password-sysext-steam-deck/setup)
 
 > TODO: Work out how to either use make on the Terminal, or set root file ownership within Flatpaks.
 
@@ -119,11 +119,11 @@ Use a system Terminal session.
 
 **Where is the documentation?**
 
-I have added comments inline with the main scripts, these are converted to markdown (as long as I remembered to type `make docs` before committing). See <https://sebble.github.io/1password-sysext-steam-deck/>.
+I have added comments inline with the main script, these are converted to markdown (as long as I remembered to type `make docs` before committing). See <https://sebble.github.io/1password-sysext-steam-deck/>.
 
 **I cannot use Make**
 
-See "_My `os-release` is `22.08`_", but this time `make` is not installed on SteamOS in general, only _inside_ the VS Code Flatpak. Ignore the Makefile, use the `scripts/*.sh` directly. There's nothing special in the `Makefile` and install won't work, some file ownership also won't work.
+See "_My `os-release` is `22.08`_", but this time `make` is not installed on SteamOS in general, only _inside_ the VS Code Flatpak. Ignore the Makefile, use `./scripts/10_setup.sh` directly. There's nothing special in the `Makefile` and install won't work, some file ownership also won't work.
 
 **Why do the scripts look funny?**
 
