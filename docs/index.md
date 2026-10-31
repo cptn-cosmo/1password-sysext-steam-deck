@@ -1,7 +1,3 @@
----
-title: About
----
-
 # 1Password for Steam Deck
 
 Run the 1Password desktop app and CLI on SteamOS as a [systemd system extension](https://blogs.igalia.com/berto/2022/09/13/adding-software-to-the-steam-deck-with-systemd-sysext/) (`systemd-sysext`).
